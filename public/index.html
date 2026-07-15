@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMI — Multi-Subject Teacher</title>
+  
+  <!-- All CSS from style.css is now inside this <style> tag -->
+  <style>
+    /* Basic font */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Montserrat",sans-serif;}
+    html,body{height:100%;}
+
+    /* Particles behind */
+    #particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;}
+
+    /* FRONT PAGE (landing) */
+    .front-page{
+      position:fixed;inset:0;background:linear-gradient(135deg,#041426,#021220);z-index:1002;color:#e6f7ff;display:flex;align-items:center;justify-content:center;padding:28px;
+    }
+    .front-card{max-width:1100px;width:100%;background:rgba(255,255,255,0.04);border-radius:16px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:center}
+    .front-card h1{font-size:34px;margin-bottom:8px}
+    .front-card p{opacity:0.92;line-height:1.45}
+    .features{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    .feature{display:flex;gap:10px;align-items:flex-start}
+    .feature b{color:#00E5FF}
+    .start-btn{margin-top:18px;padding:12px 18px;border-radius:12px;border:none;background:#00E5FF;color:#01202A;font-weight:700;cursor:pointer;font-size:16px}
+    .front-illustration{padding:10px}
+    .front-illustration .card{background:linear-gradient(180deg,#001f2f,#003b5a);border-radius:12px;padding:16px;color:#fff}
+
+    /* welcome splash */
+    .welcome-screen{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      background: radial-gradient(circle at center, #081828, #000);z-index:999; color:#fff;}
+    .welcome-screen h1 span{color:#00E5FF;text-shadow:0 0 12px #00E5FF;}
+    .lumi-init{margin-top:10px;color:#cfefff;}
+
+    /* user selection / subject selection */
+    .user-select-screen{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;gap:14px;padding:20px;color:#fff;text-align:center;}
+    .user-row, .subject-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;}
+    .user-btn, .subject-btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600;background:#00E5FF;color:#000;min-width:160px;}
+    .subject-cancel{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;background:#ff6b6b;color:#fff;}
+
+    /* main chat container - INCREASED SIZE */
+    .chat-container{
+      position:relative;
+      max-width: 720px; /* increased from 420px */
+      width: 96%;
+      max-height: 88vh;
+      height: 88vh; /* use viewport height for better scaling */
+      margin: 28px auto; /* Center the container */
+      background:rgba(255,255,255,0.06);
+      border-radius:16px;border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 12px 60px rgba(0,0,0,0.6);overflow:hidden;display:flex;flex-direction:column;
+    }
+
+    /* header */
+    .header-bar{display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,0,0,0.12)}
+    .header-controls{display:flex;gap:8px;}
+    .small-btn{padding:6px 10px;border-radius:8px;border:none;background:#fff;color:#000;cursor:pointer}
+    .theme-btn{background:transparent;border:none;font-size:20px;cursor:pointer}
+
+    /* meta bar */
+    .meta-bar{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(0,0,0,0.04);font-size:13px;color:#e6f7ff}
+    .meta-item{opacity:0.9}
+
+    /* clear */
+    .clear-btn{margin:10px auto;width:88%;padding:8px;border-radius:10px;border:none;background:#ff4d4d;color:#fff;cursor:pointer}
+
+    /* chat box */
+    .chat-box{padding:14px;flex:1;overflow-y:auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);}    
+    .message{max-width:86%;padding:10px;margin:8px 0;border-radius:12px;word-break:break-word;}
+    .user-message{background:#007BFF;color:#fff;margin-left:auto;text-align:right;}
+    .bot-message{background:rgba(255,255,255,0.95);color:#222;text-align:left;}
+    .dots{font-weight:900;opacity:0.6;letter-spacing:2px;}
+
+    /* input */
+    .input-area{display:flex;gap:8px;padding:10px;background:rgba(0,0,0,0.06)}
+    #user-input{flex:1;padding:14px;border-radius:8px;border:1px solid rgba(0,0,0,0.08); background: #fff; color: #000; font-size:15px}
+    .send-btn{padding:10px 16px;border-radius:10px;border:none;background:#00E5FF;color:#000;font-weight:700;cursor:pointer}
+    .mic-btn{padding:10px;border-radius:8px;border:none;background:#ff006a;color:#fff;cursor:pointer}
+    .mic-active{box-shadow:0 0 10px rgba(0,255,170,0.6);}
+
+    /* themes */
+    body.sumit-theme{background:linear-gradient(135deg,#001F2F 0%,#003B5A 50%,#00E5FF 100%)}
+    body.sarthak-theme{background:linear-gradient(135deg,#1A0008 0%,#330010 50%,#FF0033 100%)}
+    body.pradeep-theme{background:linear-gradient(135deg,#0E0C05 0%,#4A3F1E 50%,#FFD700 100%)}
+
+    /* dark mode */
+    body.dark-mode{color:#fff}
+    body.dark-mode .chat-container{background:rgba(0,0,0,0.36);border-color:rgba(255,255,255,0.06)}
+    body.dark-mode .bot-message { background: #2C2C2C; color: #eee; }
+    body.dark-mode #user-input { background: #333; color: #fff; border-color: rgba(255,255,255,0.1); }
+    
+    /* small helpers */
+    .fade-in{animation:popIn 0.28s ease}
+    @keyframes popIn{0%{transform:scale(0.98);opacity:0}100%{transform:scale(1);opacity:1}}
+    .clear-animation{opacity:0.6;transform:scale(0.98);transition:0.2s}
+
+    /* responsive tweaks */
+    @media (max-width:900px){
+      .front-card{grid-template-columns:1fr;}
+      .chat-container{max-width:92%;height:86vh}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PARTICLES BACKGROUND -->
+  <canvas id="particles"></canvas>
+
+  <!-- FRONT PAGE / LANDING -->
+  <div id="front-page" class="front-page">
+    <div class="front-card">
+      <div>
+        <h1>LUMI — Your multi-subject AI teacher</h1>
+        <p>Fast explanations, practice questions, and friendly guidance for CS subjects — from DBMS to Machine Learning. Built for students who want concise lessons, examples, and quick revision.</p>
+
+        <div class="features">
+          <div class="feature"><b>•</b> Subject-focused lessons (choose from many CS topics)</div>
+          <div class="feature"><b>•</b> Example code, diagrams, and practice questions</div>
+          <div class="feature"><b>•</b> Persistent memory per user for review</div>
+          <div class="feature"><b>•</b> Voice input & responsive UI</div>
+        </div>
+
+        <button id="start-btn" class="start-btn">Start LUMI</button>
+      </div>
+      <div class="front-illustration">
+        <div class="card">
+          <h3 style="margin-bottom:6px">Quick tour</h3>
+          <p style="font-size:14px;opacity:0.92;">Pick a profile, then a subject. Ask questions in plain English (for example: "Explain normalization in DBMS"). LUMI will answer with examples and practice problems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER SELECTION (Choose profile) -->
+  <div id="user-select-screen" class="user-select-screen">
+    <h2>Who are you?</h2>
+    <div class="user-row">
+      <button class="user-btn" data-user="sumit">Sumit</button>
+      <button class="user-btn" data-user="sarthak">Sarthak</button>
+      <button class="user-btn" data-user="pradeep">Pradeep</button>
+    </div>
+  </div>
+
+  <!-- SUBJECT SELECTION -->
+  <div id="subject-select-screen" class="user-select-screen" style="display:none;">
+    <h2>Select a subject</h2>
+    <div class="subject-grid" id="subject-grid">
+      <!-- buttons injected by markup below for readability -->
+      <button class="subject-btn" data-subject="DBMS">DBMS</button>
+      <button class="subject-btn" data-subject="DAA">DAA</button>
+      <button class="subject-btn" data-subject="Java">OOP / Java</button>
+      <button class="subject-btn" data-subject="Operating Systems">Operating Systems</button>
+      <button class="subject-btn" data-subject="Computer Networks">Computer Networks</button>
+      <button class="subject-btn" data-subject="Data Structures">Data Structures</button>
+      <button class="subject-btn" data-subject="Automata Theory">Automata Theory</button>
+      <button class="subject-btn" data-subject="C Programming">C Programming</button>
+      <button class="subject-btn" data-subject="Python">Python</button>
+      <button class="subject-btn" data-subject="Software Engineering">Software Engineering</button>
+      <button class="subject-btn" data-subject="Web Technology">Web Technology</button>
+      <button class="subject-btn" data-subject="Machine Learning">Machine Learning</button>
+      <button class="subject-btn" data-subject="AI Fundamentals">AI Fundamentals</button>
+      <button class="subject-btn" data-subject="Cloud Computing">Cloud Computing</button>
+      <button class="subject-btn" data-subject="Cyber Security">Cyber Security</button>
+      <button class="subject-btn" data-subject="Mobile Development">Mobile Development</button>
+      <button class="subject-btn" data-subject="Discrete Mathematics">Discrete Mathematics</button>
+      <button class="subject-btn" data-subject="Probability & Statistics">Probability & Statistics</button>
+      <button class="subject-btn" data-subject="Computer Architecture">Computer Architecture</button>
+      <button class="subject-btn" data-subject="Compiler Design">Compiler Design</button>
+    </div>
+    <div style="margin-top:12px;">
+      <button id="subject-cancel" class="subject-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- WELCOME SPLASH -->
+  <div id="welcome-screen" class="welcome-screen" style="display:none;">
+    <h1>Welcome to <span>LUMI</span></h1>
+    <p>Your Multi-Subject AI Teacher</p>
+    <div id="lumi-init" class="lumi-init">Initializing LUMI<span id="dots"></span></div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-container" style="display:none;">
+    <header class="header-bar">
+      <h1 id="title">LUMI 🤖</h1>
+      <div class="header-controls">
+        <button id="change-subject" class="small-btn">Change Subject</button>
+        <button id="theme-toggle" class="theme-btn">🌙</button>
+      </div>
+    </header>
+
+    <div class="meta-bar">
+      <div id="current-user" class="meta-item">User: —</div>
+      <div id="current-subject" class="meta-item">Subject: —</div>
+    </div>
+
+    <button id="clear-chat" class="clear-btn">🗑 Clear Chat</button>
+
+    <div id="chat-box" class="chat-box"></div>
+
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Ask LUMI (example: Explain normalization in DBMS)"/>
+      <button id="mic-btn" class="mic-btn">🎤</button>
+      <button id="send-btn" class="send-btn">Send</button>
+    </div>
+  </div>
+
+  <script type="module">
+    /* --------- DOM --------- */
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const clearBtn = document.getElementById("clear-chat");
+    const themeBtn = document.getElementById("theme-toggle");
+    const micBtn = document.getElementById("mic-btn");
+    const userSelectScreen = document.getElementById("user-select-screen");
+    const subjectSelectScreen = document.getElementById("subject-select-screen");
+    const subjectCancel = document.getElementById("subject-cancel");
+    const currentUserEl = document.getElementById("current-user");
+    const currentSubjectEl = document.getElementById("current-subject");
+    const changeSubjectBtn = document.getElementById("change-subject");
+    const welcome = document.getElementById("welcome-screen");
+    const chatContainer = document.querySelector(".chat-container");
+    const frontPage = document.getElementById('front-page');
+    const startBtn = document.getElementById('start-btn');
+
+    /* --------- Themes map --------- */
+    const themes = {
+      sumit: "sumit-theme",
+      sarthak: "sarthak-theme",
+      pradeep: "pradeep-theme",
+    };
+
+    let currentUser = localStorage.getItem("lumi_user") || null;
+
+    /* --------- Init splash --------- */
+    chatContainer.style.opacity = "0";
+
+    function runInit() {
+      setTimeout(() => {
+        welcome.style.display = "flex";
+        welcome.style.transition = "transform 0.9s ease-out, opacity 0.9s ease-out";
+        welcome.style.transform = "translateY(-140px)";
+        welcome.style.opacity = "0";
+
+        setTimeout(() => {
+          welcome.style.display = "none";
+          chatContainer.style.transition = "opacity 0.3s ease-out";
+          chatContainer.style.opacity = "1";
+          chatContainer.style.display = "flex";
+
+          if (!currentUser) userSelectScreen.style.display = "flex";
+          else {
+            applyUserTheme(currentUser); // Apply theme on load if user exists
+            showSelectedUser();
+
+            if (!localStorage.getItem("lumi_subject"))
+              subjectSelectScreen.style.display = "flex";
+            else updateSubjectUI();
+
+            loadUserChat();
+          }
+        }, 900);
+      }, 600);
+    }
+
+    // Start button on the landing page
+    startBtn.onclick = () => {
+      frontPage.style.display = 'none';
+      runInit();
+    };
+
+    if (!frontPage || frontPage.style.display === 'none') {
+      runInit();
+    }
+
+    /* --------- USER SELECTION --------- */
+    document.querySelectorAll(".user-btn").forEach((btn) => {
+      btn.onclick = () => {
+        currentUser = btn.dataset.user;
+        localStorage.setItem("lumi_user", currentUser);
+
+        applyUserTheme(currentUser);
+        userSelectScreen.style.display = "none";
+        showSelectedUser();
+
+        if (!localStorage.getItem("lumi_subject"))
+          subjectSelectScreen.style.display = "flex";
+
+        loadUserChat();
+      };
+    });
+
+    function applyUserTheme(user) {
+      document.body.className = "";
+      const isDark = themeBtn.textContent === "☀️";
+      if (isDark) document.body.classList.add("dark-mode");
+      
+      document.body.classList.add(themes[user] || "");
+    }
+
+    // Explicitly add initial welcome message once at script load
+    addMessage("<strong>Welcome to LUMI!</strong><br>I am your Multi-Subject AI Teacher. Please select a user profile and a subject above to begin our session.", "bot-message");
+
+    function showSelectedUser() {
+      currentUserEl.textContent = `User: ${capitalize(currentUser)}`;
+    }
+
+    /* --------- SUBJECT SELECTION --------- */
+    document.querySelectorAll(".subject-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const subject = btn.dataset.subject;
+        localStorage.setItem("lumi_subject", subject);
+
+        subjectSelectScreen.style.display = "none";
+        addMessage(`📘 Subject selected: ${subject}`, "bot-message");
+
+        updateSubjectUI();
+        saveChat();
+      };
+    });
+
+    subjectCancel.onclick = () => {
+      subjectSelectScreen.style.display = "none";
+      addMessage(
+        "Subject selection cancelled. Tap 'Change Subject' anytime.",
+        "bot-message"
+      );
+    };
+
+    changeSubjectBtn.onclick = () => {
+      subjectSelectScreen.style.display = "flex";
+    };
+
+    function updateSubjectUI() {
+      const s = localStorage.getItem("lumi_subject") || "—";
+      currentSubjectEl.textContent = `Subject: ${s}`;
+    }
+
+    /* --------- CHAT STORAGE --------- */
+    function loadUserChat() {
+      if (!currentUser) return;
+      chatBox.innerHTML =
+        localStorage.getItem(`${currentUser}_chatHistory`) || "";
+      localStorage.setItem(
+        `${currentUser}_memory`,
+        localStorage.getItem(`${currentUser}_memory`) || ""
+      );
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function saveChat() {
+      if (!currentUser) return;
+      localStorage.setItem(`${currentUser}_chatHistory`, chatBox.innerHTML);
+    }
+
+    function getMemory() {
+      if (!currentUser) return "";
+      return localStorage.getItem(`${currentUser}_memory`) || "";
+    }
+
+    function saveMemory(m) {
+      if (!currentUser) return;
+      localStorage.setItem(`${currentUser}_memory`, m);
+    }
+
+    /* --------- MESSAGE UI --------- */
+    function addMessage(text, className) {
+      const div = document.createElement("div");
+      div.classList.add("message", className, "fade-in");
+      div.innerHTML = sanitizeHtml(text);
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sanitizeHtml(str) {
+      const temp = document.createElement('div');
+      temp.textContent = str;
+      let sanitized = temp.innerHTML;
+      
+      // List of safe HTML tags to unescape back to actual HTML
+      const safeTags = [
+        'code', 'br', 'b', 'strong', 'i', 'em', 'u', 'pre',
+        'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'p'
+      ];
+      
+      for (const tag of safeTags) {
+        const openRegex = new RegExp(`&lt;${tag}&gt;`, 'gi');
+        const closeRegex = new RegExp(`&lt;\\/${tag}&gt;`, 'gi');
+        sanitized = sanitized
+          .replace(openRegex, `<${tag}>`)
+          .replace(closeRegex, `</${tag}>`);
+      }
+      
+      sanitized = sanitized.replace(/\n/g, "<br>");
+      return sanitized;
+    }
+
+    /* --------- TYPING DOTS --------- */
+    function showTyping() {
+      const div = document.createElement("div");
+      div.classList.add("message", "bot-message");
+      div.innerHTML = `<span class="dots">● ○ ○</span>`;
+
+      chatBox.appendChild(div);
+      let i = 0;
+      const frames = ["● ○ ○", "○ ● ○", "○ ○ ●"];
+
+      div._interval = setInterval(() => {
+        i = (i + 1) % 3;
+        div.innerHTML = `<span class="dots">${frames[i]}</span>`;
+      }, 250);
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return div;
+    }
+
+    /* --------- TYPEWRITER --------- */
+    function typeWriter(el, text, speed = 15) {
+      el.innerHTML = "";
+      let i = 0;
+      const sanitizedText = sanitizeHtml(text);
+
+      function type() {
+        if (i < sanitizedText.length) {
+          // If we encounter a tag opening, append the entire tag to prevent rendering raw HTML characters
+          if (sanitizedText[i] === "<") {
+            const closingIndex = sanitizedText.indexOf(">", i);
+            if (closingIndex !== -1) {
+              el.innerHTML += sanitizedText.substring(i, closingIndex + 1);
+              i = closingIndex + 1;
+            } else {
+              el.innerHTML += sanitizedText[i];
+              i++;
+            }
+          } else {
+            el.innerHTML += sanitizedText[i];
+            i++;
+          }
+          chatBox.scrollTop = chatBox.scrollHeight;
+          setTimeout(type, speed);
+        }
+      }
+      type();
+    }
+
+    /* --------- HELPERS --------- */
+    function clean(t) {
+      return t.replace(/[*#\-_]{2,}/g, "").trim();
+    }
+
+    function capitalize(s) {
+      if (!s) return "";
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    
+    /* =======================================================
+       █████  LOCAL API CALL
+    ======================================================= */
+    async function getBotReply(userMsg) {
+      if (!currentUser) return "Select a user first.";
+
+      const lc = userMsg.toLowerCase();
+      if (lc.includes("change subject")) {
+        subjectSelectScreen.style.display = "flex";
+        return "Sure — choose a new subject.";
+      }
+
+      const subject = localStorage.getItem("lumi_subject") || "General";
+      const systemPrompt = `You are LUMI — a friendly multi-subject TEACHER AI.\nYour job is to teach the user, ${capitalize(currentUser)}, about the subject: ${subject}.\n- Explain concepts simply.\n- Provide examples, notes, steps, formulas, and text-based diagrams.\n- Stay inside the selected subject: ${subject}.\n- Give practice questions and correct student answers.\n- Stay friendly and motivating.\n- Format your response using <br> for newlines and <code>...</code> for code blocks.`;
+
+      let memory = getMemory();
+      const chatHistory = [];
+      
+      if (memory) {
+          const lines = memory.split('\n');
+          for (const line of lines) {
+              if (line.startsWith('User: ')) {
+                  chatHistory.push({
+                      role: 'user',
+                      parts: [{ text: line.substring(6) }]
+                  });
+              } else if (line.startsWith('LUMI: ')) {
+                  chatHistory.push({
+                      role: 'model',
+                      parts: [{ text: line.substring(6) }]
+                  });
+              }
+          }
+      }
+      
+      chatHistory.push({
+          role: 'user',
+          parts: [{ text: userMsg }]
+      });
+
+      let newMemory = memory + `\nUser: ${userMsg}`;
+      let lines = newMemory.split("\n");
+      if (lines.length > 50) newMemory = lines.slice(-50).join("\n");
+
+      const typing = showTyping();
+      const apiUrl = `/api/chat`;
+
+      const payload = {
+          contents: chatHistory,
+          systemInstruction: {
+              parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+              maxOutputTokens: 800,
+              temperature: 0.6,
+          }
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const raw = await response.text();
+
+        clearInterval(typing._interval);
+        typing.remove();
+
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch (err) {
+          console.error("JSON parse failed:", err, raw);
+          return "❌ Error: Server returned an invalid response. Check the console.";
+        }
+        
+        if (data.error) {
+            console.error("API error:", data.error);
+            return `❌ API Error: ${data.error.message}`;
+        }
+
+        if (!data || !data.candidates || !data.candidates[0].content || !data.candidates[0].content.parts[0].text) {
+          console.error("Error: Unexpected response structure", data);
+          return "❌ Response error. Check console.";
+        }
+
+        const reply = data.candidates[0].content.parts[0].text;
+        saveMemory(newMemory + `\nLUMI: ${reply}`);
+        return reply;
+      } catch (err) {
+        clearInterval(typing._interval);
+        typing.remove();
+        console.error("Network error:", err);
+        return "⚠️ Connection error. Please check your internet connection and try again.";
+      }
+    }
+
+    /* --------- SEND MESSAGE --------- */
+    sendBtn.onclick = async () => {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+
+      addMessage(msg, "user-message");
+      userInput.value = "";
+      saveChat();
+
+      const reply = await getBotReply(msg);
+
+      const div = document.createElement("div");
+      div.classList.add("message", "bot-message");
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      typeWriter(div, reply);
+      saveChat();
+    };
+
+    /* --------- ENTER KEY --------- */
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+
+    /* --------- CLEAR CHAT --------- */
+    clearBtn.onclick = () => {
+      chatBox.classList.add("clear-animation");
+      setTimeout(() => {
+        chatBox.innerHTML = "";
+        localStorage.removeItem(`${currentUser}_chatHistory`);
+        localStorage.removeItem(`${currentUser}_memory`);
+        addMessage("Chat history cleared.", "bot-message");
+        chatBox.classList.remove("clear-animation");
+      }, 300);
+    };
+
+    /* --------- THEME --------- */
+    themeBtn.onclick = () => {
+      document.body.classList.toggle("dark-mode");
+      themeBtn.textContent = document.body.classList.contains("dark-mode")
+        ? "☀️"
+        : "🌙";
+    };
+
+    /* --------- MIC --------- */
+    if ("webkitSpeechRecognition" in window) {
+      const rec = new webkitSpeechRecognition();
+      rec.lang = "en-IN";
+      rec.continuous = false;
+      rec.interimResults = false;
+
+      micBtn.onclick = () => {
+        micBtn.classList.add("mic-active");
+        rec.start();
+      };
+
+      rec.onresult = (e) => {
+        userInput.value = e.results[0][0].transcript;
+        micBtn.classList.remove("mic-active");
+        sendBtn.click();
+      };
+
+      rec.onerror = (e) => {
+        console.error("Speech recognition error:", e);
+        micBtn.classList.remove("mic-active");
+      };
+      
+      rec.onend = () => {
+        micBtn.classList.remove("mic-active");
+      };
+    } else {
+      micBtn.style.display = "none";
+    }
+
+    /* --------- PARTICLES BACKGROUND --------- */
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    let particles = [];
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6;
+        this.size = Math.random() * 2 + 0.8;
+      }
+      move() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+      draw() {
+        ctx.fillStyle = "rgba(0,255,255,0.08)";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 80; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.move();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
