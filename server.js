@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper to determine if the API key is a placeholder or missing
 function isApiKeyPlaceholder(key) {
-  return !key || key.trim() === "" || key.includes("AQ.Ab8RN6I-aPv1xDdtVgAXW9qoI0JRwCkdXJ5pR8H_mbG_IY4LYg") || key.includes("AQ.Ab8RN6I-aPv1xDdtVgAXW9qoI0JRwCkdXJ5pR8H_mbG_IY4LYg");
+  return !key || key.trim() === "" || key.includes("YOUR_GEMINI_API_KEY_HERE") || key.includes("YOUR_GEMINI_API_KEY");
 }
 
 // Generate mock responses for testing without an API key
