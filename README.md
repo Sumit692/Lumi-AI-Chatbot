@@ -1,106 +1,209 @@
-# LUMI-CHATBOT
-🌟 LUMI — Multi-Subject AI Teacher Chatbot
+# 🤖 LUMI – AI Multi-Subject Teacher Chatbot
 
-LUMI is a student-friendly AI chatbot built to teach multiple Computer Science subjects like DBMS, DAA, Java, CN, OS, ML, and more.
-It features a clean UI, subject selection system, voice input, chat history saving, user-profile-based themes, and Google Gemini API integration.
+An intelligent AI-powered educational chatbot designed to help students learn Computer Science subjects through natural conversations. LUMI provides interactive explanations, examples, and practice questions across multiple technical domains.
 
-This project is made for students who want quick explanations, examples, notes, diagrams, and practice questions — all in one chatbot.
+## 🌐 Live Demo
 
-🚀 Features
+🚀 **Try LUMI Here:** https://lumi-ai-chatbot.onrender.com/
 
-✔️ Multi-subject selection (DBMS, DAA, Java, CN, OS, etc.)
-✔️ User profile selection with unique color themes
-✔️ Chat memory stored separately per user
-✔️ Beautiful landing page with animations
-✔️ Google Gemini API integration (gemini-2.5-flash-preview-09-2025)
-✔️ Typewriter effect for smooth responses
-✔️ Voice input using Web Speech API
-✔️ Responsive UI + Particle animated background
-✔️ Subject-aware, friendly teacher-style responses
-✔️ Local chat history + memory persistence
-✔️ Dark mode toggle
+---
 
-🛠️ Tech Stack
+## 📌 Features
 
-HTML5
+* 🎓 AI-powered learning assistant
+* 📚 Supports multiple Computer Science subjects
+* 💬 Natural conversational interface
+* 📝 Detailed explanations with examples
+* ❓ Practice questions for self-assessment
+* ⚡ Real-time response generation using Google Gemini API
+* 🛡️ Automatic Mock Mode when no API key is configured
+* 📱 Responsive and clean user interface
 
-CSS3 (Glassmorphism + animated gradients + responsive design)
+---
 
-JavaScript (ES6)
+## 🛠️ Tech Stack
 
-Google Gemini API
+### Frontend
 
-LocalStorage for chat + memory
+* HTML5
+* CSS3
+* JavaScript
 
-Web Speech API for mic input
+### Backend
 
-Canvas API for particle animation
+* Node.js
+* Express.js
+* CORS
+* Dotenv
 
-📂 Project Structure
+### AI Integration
 
-Since the project is self-contained, everything is inside one HTML file:
+* Google Gemini API
 
-/lumi_chatbot_with_frontpage.html
-   ├── Landing Page
-   ├── User Selection Screen
-   ├── Subject Selection Screen
-   ├── Chat UI
-   ├── Themes + Dark Mode
-   ├── Particles Background
-   ├── Full JavaScript (Gemini, Typewriter, Voice, Storage)
-   └── Full CSS (integrated)
+### Deployment
 
-🔑 How to Add Your Gemini API Key
+* Render
 
-Open the file lumi_chatbot_with_frontpage.html
+---
 
-Scroll to the JavaScript section
+## 📂 Project Structure
 
-Replace the apikey value:
+```
+LUMI-AI-Chatbot/
+│
+├── public/             # Frontend files
+├── server.js           # Express server
+├── package.json
+├── package-lock.json
+├── .gitignore
+└── README.md
+```
 
-const apikey = "YOUR_API_KEY_HERE";
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Sumit692/Lumi-AI-Chatbot.git
+```
+
+### 2. Navigate into the Project
+
+```bash
+cd Lumi-AI-Chatbot
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Create a `.env` File (Optional)
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-3.1-flash-lite
+PORT=3000
+```
+
+> If no `GEMINI_API_KEY` is provided, LUMI automatically runs in **Mock Mode**, allowing the chatbot to function with predefined educational responses.
+
+### 5. Start the Application
+
+```bash
+npm start
+```
+
+or during development
+
+```bash
+npm run dev
+```
+
+Open your browser and visit:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 📚 Supported Topics
+
+* Database Management Systems (DBMS)
+* Data Structures & Algorithms (DSA)
+* Design and Analysis of Algorithms (DAA)
+* Operating Systems
+* Computer Networks
+* Theory of Computation
+* Object-Oriented Programming
+* Software Engineering
+* SQL
+* And many more...
+
+---
+
+## 🤖 How It Works
+
+1. The user submits a question through the chat interface.
+2. The Express backend receives the request.
+3. If a valid Gemini API key is configured:
+
+   * The request is forwarded to the Google Gemini API.
+   * AI-generated responses are returned to the user.
+4. If no API key is available:
+
+   * LUMI switches to Mock Mode.
+   * Educational sample responses are generated locally.
+
+---
+
+## ✨ Future Enhancements
+
+* Voice-based interaction
+* User authentication
+* Chat history
+* PDF notes generation
+* Quiz mode
+* Dark/Light theme toggle
+* Progress tracking dashboard
+* Multi-language support
+
+---
+
+## 📸 Screenshots
+
+> <img width="1366" height="680" alt="Screenshot (4)" src="https://github.com/user-attachments/assets/a8676dad-e4ac-49c7-9752-a624e706c30d" />
+
+<img width="1366" height="686" alt="Screenshot (5)" src="https://github.com/user-attachments/assets/070d1fbc-4c68-4481-b9ac-814cff4141eb" />
 
 
-Get your free API key from Google AI Studio.
 
-▶️ How to Run
+---
 
-Just open the lumi_chatbot_with_frontpage.html file in any browser —
-No hosting required. No backend required.
+## 🤝 Contributing
 
-Or
-Use VS Code Live Server extension for auto-refresh.
+Contributions are welcome!
 
-🧠 How LUMI Responds
+1. Fork the repository
+2. Create a feature branch
 
-It acts like a teacher AI
+```bash
+git checkout -b feature-name
+```
 
-Uses the selected subject to keep explanations relevant
+3. Commit your changes
 
-Gives examples, notes, formulas, diagrams, and practice problems
+```bash
+git commit -m "Added new feature"
+```
 
-Uses <br> formatting for structured responses
+4. Push to GitHub
 
-Stores memory and uses it in future conversations
+```bash
+git push origin feature-name
+```
 
-🎨 Themes Per User
-User	Theme
-Sumit	Blue-Cyan Gradient
-Sarthak	Red-Black Gradient
-Pradeep	Gold-Dark Theme
-📸 Screenshots (Optional Section)
+5. Open a Pull Request
 
-(You can add GitHub images here later)
+---
 
-🙌 Contributing
+## 📄 License
 
-Pull requests are welcome.
-If you'd like to add more subjects or improve UI, feel free to contribute!
+This project is licensed under the MIT License.
 
-📜 License
+---
 
-This project is open-source under the MIT License.
+## 👨‍💻 Author
 
-⭐ If you like this project
+**Sumit Kumar Singh**
 
-Give this repo a star on GitHub — it motivates more updates!
+* GitHub: https://github.com/Sumit692
+* LinkedIn: [www.linkedin.com/in/sumit-kumar-singh-3693352ab](http://www.linkedin.com/in/sumit-kumar-singh-3693352ab)
+
+---
+
+⭐ If you found this project useful, consider giving it a **Star** on GitHub!
